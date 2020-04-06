@@ -1,5 +1,5 @@
 /*
-Lab 1 report <Student_names and liu_id>
+ LAB 1, Jacob Eek (jacee719) Gustav Yngemo (gusda320) 
 */
 
 /* All non code should be within SQL-comments like this */ 
@@ -9,22 +9,17 @@ Lab 1 report <Student_names and liu_id>
 Drop all user created tables that have been created when solving the lab
 */
 
-DROP TABLE IF EXISTS custom_table CASCADE;
-
-
-/* Have the source scripts in the file so it is easy to recreate!*/
-
-SOURCE company_schema.sql;
-SOURCE company_data.sql;
-
-/* LAB 1, Jacob Eek (jacee719) Gustav Yngemo (gusda320) */
-
 DROP TABLE IF EXISTS task14 CASCADE;
 DROP VIEW IF EXISTS task15 CASCADE;
 DROP VIEW IF EXISTS task17 CASCADE;
 DROP VIEW IF EXISTS v1 CASCADE;
 DROP VIEW IF EXISTS v2 CASCADE;
 DROP VIEW IF EXISTS jbsale_supply CASCADE;
+
+/* Have the source scripts in the file so it is easy to recreate!*/
+
+SOURCE company_schema.sql;
+SOURCE company_data.sql;
 
 /* Task 1 */
 SELECT * FROM jbemployee;
@@ -84,7 +79,6 @@ GROUP BY supplier)
 as t2
 ON t1.id = t2.supplier;
 
-/* PERHAPS COULD CREATE TWO VIEWS INSTEAD, AND LATER INNER JOIN THEM. */
 /* Task 14 */
 CREATE TABLE task14
 (
@@ -99,12 +93,12 @@ CREATE TABLE task14
     FOREIGN KEY (dept) REFERENCES jbdept(id)
 );
 
-INSERT INTO tmp 
+INSERT INTO task14
 SELECT * 
 FROM jbitem
 WHERE price < (SELECT AVG(price) from jbitem);
 
-SELECT * from tmp;
+SELECT * from task14;
 
 /* Task 15 */
 CREATE OR REPLACE VIEW task15
@@ -135,9 +129,9 @@ INNER JOIN jbitem
 ON jbitem.id = jbsale.item
 GROUP BY debit;
 
-/* Task 19 */
+/* Task 19a */
 
-/* Firstly: Have to delete rows in jbsale referencing jbitem */ 
+/* Firstly: Have to delete rows in jbsale referencing jbitem */
 
 DELETE FROM jbsale
 WHERE item IN
@@ -151,7 +145,7 @@ WHERE item IN
                                         FROM jbcity
                                         WHERE name = 'Los Angeles')));
 			
-/* Secondly: Have to delete rows in jbitem referencing jbsupplier */ 
+/* Secondly: Have to delete rows in jbitem referencing jbsupplier */
 
 DELETE FROM jbitem
 WHERE supplier IN
@@ -202,4 +196,6 @@ ON v1.item = v2.item
 GROUP BY v1.supplier;
 
 SELECT * FROM jbsale_supply_mod;
+
+
 
