@@ -18,8 +18,6 @@ DROP VIEW IF EXISTS jbsale_supply CASCADE;
 
 /* Have the source scripts in the file so it is easy to recreate!*/
 
-SOURCE company_schema.sql;
-SOURCE company_data.sql;
 
 /* Task 1 */
 SELECT * FROM jbemployee;
