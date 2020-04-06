@@ -19,6 +19,13 @@ SOURCE company_data.sql;
 
 /* LAB 1, Jacob Eek (jacee719) Gustav Yngemo (gusda320) */
 
+DROP TABLE IF EXISTS task14 CASCADE;
+DROP VIEW IF EXISTS task15 CASCADE;
+DROP VIEW IF EXISTS task17 CASCADE;
+DROP VIEW IF EXISTS v1 CASCADE;
+DROP VIEW IF EXISTS v2 CASCADE;
+DROP VIEW IF EXISTS jbsale_supply CASCADE;
+
 /* Task 1 */
 SELECT * FROM jbemployee;
 
@@ -61,6 +68,7 @@ AND part2.id = 11;
 
 /* Task 12 */
 SELECT AVG(weight) FROM jbparts WHERE color = 'black';
+
 /* Task 13 */
 
 SELECT t1.name as 'Name', t2.tweight as 'Total Weight'
@@ -76,9 +84,9 @@ GROUP BY supplier)
 as t2
 ON t1.id = t2.supplier;
 
-# PERHAPS COULD CREATE TWO VIEWS INSTEAD, AND LATER INNER JOIN THEM.
+/* PERHAPS COULD CREATE TWO VIEWS INSTEAD, AND LATER INNER JOIN THEM. */
 /* Task 14 */
-CREATE TABLE tmp
+CREATE TABLE task14
 (
 	id	INT NOT NULL,
     name VARCHAR(99) NOT NULL,
@@ -106,8 +114,10 @@ WHERE price < (SELECT AVG(price) from jbitem);
 
 SELECT * 
 FROM task15;
+
 /* Task 16 */
-# WRITE DIFFERENCE BETWEEN TABLE AND VIEW HERE
+/* WRITE DIFFERENCE BETWEEN TABLE AND VIEW HERE */
+
 /* Task 17 */
 CREATE OR REPLACE VIEW task17(debit, total)
 AS SELECT jbsale.debit, SUM(jbitem.price*jbsale.quantity)
@@ -116,13 +126,18 @@ WHERE jbsale.item = jbitem.id
 GROUP BY jbsale.debit;
 
 SELECT * FROM task17;
+
 /* Task 18 */
 
-/* Task 19 */
-# GENERAL PROBLEM WITH SOLUTION: ERROR CODE 1175. IS IT OKAY TO DISABLE SAFE UPDATE MODE?
-# ALSO, WHY IS ERROR CODE 1175 SHOWING UP FOR THE FIRST QUERY? item IS A PRIMARY KEY OF jbsale???
+SELECT debit, SUM(jbitem.price*quantity) as total
+FROM jbsale
+INNER JOIN jbitem
+ON jbitem.id = jbsale.item
+GROUP BY debit;
 
-# Firstly: Have to delete rows in jbsale referencing jbitem
+/* Task 19 */
+
+/* Firstly: Have to delete rows in jbsale referencing jbitem */ 
 
 DELETE FROM jbsale
 WHERE item IN
@@ -136,7 +151,7 @@ WHERE item IN
                                         FROM jbcity
                                         WHERE name = 'Los Angeles')));
 			
-# Secondly: Have to delete rows in jbitem referencing jbsupplier
+/* Secondly: Have to delete rows in jbitem referencing jbsupplier */ 
 
 DELETE FROM jbitem
 WHERE supplier IN
@@ -147,7 +162,7 @@ WHERE supplier IN
                             FROM jbcity
                             WHERE name = 'Los Angeles'));
                             
-# Lastly: Delete rows in jbsupplier located in Los Angeles
+/* Lastly: Delete rows in jbsupplier located in Los Angeles */
 
 DELETE FROM jbsupplier
 WHERE city IN
@@ -155,4 +170,36 @@ WHERE city IN
             FROM jbcity
             WHERE name = 'Los Angeles');
 
+SELECT *
+FROM jbsupplier;
+
+/* Task 19b */
+
+/* Since we have other tables referencing jbsupplier, we have to delete the rows in those tables prior to deleting the rows in jbsupplier.alter
+We have a hierarchy of jbsupplier <- jbitem <- jbsale: So firstly we have to delete all rows from jbsale containing items which have been 
+supplied by a supplier based in Los Angeles
+After that we have to delete all rows from jbitem containing items which have been supplied by a supplier in Los Angeles.
+Finally we can delete all rows in jbsupplier containing suppliers based in Los Angeles, since we have no rows from other tables referencing these rows.
+
 /* Task 20 */
+
+CREATE OR REPLACE VIEW v1(supplier, item) AS
+SELECT jbsupplier.name, jbitem.name
+FROM jbsupplier, jbitem
+WHERE jbsupplier.id = jbitem.supplier;
+
+CREATE OR REPLACE VIEW v2(item, quantity) AS
+SELECT jbitem.name, IFNULL(jbsale.quantity,0)
+FROM jbitem
+LEFT JOIN jbsale
+ON jbitem.id = jbsale.item;
+
+CREATE OR REPLACE VIEW jbsale_supply(supplier, quantity) AS
+SELECT v1.supplier, SUM(v2.quantity)
+FROM v1
+LEFT JOIN v2
+ON v1.item = v2.item
+GROUP BY v1.supplier;
+
+SELECT * FROM jbsale_supply_mod;
+
