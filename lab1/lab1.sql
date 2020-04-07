@@ -377,7 +377,9 @@ FROM task15;
 */
 
 /* Task 16 */
-/* WRITE DIFFERENCE BETWEEN TABLE AND VIEW HERE */
+/* A wiew is dynamic and a table is static. Static in this context means that the content doesn't change after creation, unless
+it's directly altered. The view on the other hand is dynamic since the content can change if the underlying data is altered.
+For example if more items are added the view will be uppdated based on the new information.*/
 
 /* Task 17 */
 CREATE OR REPLACE VIEW task17(debit, total)
