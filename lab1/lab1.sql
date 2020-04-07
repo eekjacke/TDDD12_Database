@@ -430,13 +430,13 @@ GROUP BY debit;
 
 DELETE FROM jbsale
 WHERE item IN
-			(SELECT id 
-             FROM jbitem
-             WHERE supplier IN
-							(SELECT id 
-							FROM jbsupplier
+            (SELECT id 
+            FROM jbitem
+            WHERE supplier IN
+                            (SELECT id 
+                            FROM jbsupplier
                             WHERE city IN
-										(SELECT id 
+							            (SELECT id 
                                         FROM jbcity
                                         WHERE name = 'Los Angeles')));
 			
@@ -444,7 +444,7 @@ WHERE item IN
 
 DELETE FROM jbitem
 WHERE supplier IN
-				(SELECT id 
+                (SELECT id 
                 FROM jbsupplier
                 WHERE city IN
 							(SELECT id
@@ -455,7 +455,7 @@ WHERE supplier IN
 
 DELETE FROM jbsupplier
 WHERE city IN
-			(SELECT id
+            (SELECT id
             FROM jbcity
             WHERE name = 'Los Angeles');
 
