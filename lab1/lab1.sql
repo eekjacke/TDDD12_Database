@@ -305,12 +305,12 @@ ON t1.id = t2.supplier;
 /* Task 14 */
 CREATE TABLE task14
 (
-	id	INT NOT NULL,
-    name VARCHAR(99) NOT NULL,
-    dept INT NOT NULL,
-    price INT NOT NULL,
-	qoh INT NOT NULL,
-    supplier INT NOT NULL,
+    id	        INT         NOT NULL,
+    name        VARCHAR(99) NOT NULL,
+    dept        INT         NOT NULL,
+    price       INT         NOT NULL,
+	qoh         INT         NOT NULL,
+    supplier    INT         NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (supplier) REFERENCES jbsupplier(id),
     FOREIGN KEY (dept) REFERENCES jbdept(id)
@@ -436,7 +436,7 @@ WHERE item IN
                             (SELECT id 
                             FROM jbsupplier
                             WHERE city IN
-							            (SELECT id 
+                                        (SELECT id 
                                         FROM jbcity
                                         WHERE name = 'Los Angeles')));
 			
@@ -447,7 +447,7 @@ WHERE supplier IN
                 (SELECT id 
                 FROM jbsupplier
                 WHERE city IN
-							(SELECT id
+                            (SELECT id
                             FROM jbcity
                             WHERE name = 'Los Angeles'));
                             
