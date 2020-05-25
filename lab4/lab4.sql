@@ -18,6 +18,8 @@ DROP PROCEDURE IF EXISTS addDay;
 DROP PROCEDURE IF EXISTS addDestination;
 DROP PROCEDURE IF EXISTS addRoute;
 DROP PROCEDURE IF EXISTS addFlight;
+DROP FUNCTION IF EXISTS calculateFreeSeats;
+
 
 SELECT 'Creating tables' AS 'Message';
 
@@ -200,11 +202,26 @@ CALL addFlight("HOB","MIT", 2011, 4, "12:00:00");
 SELECT "You are now supposed to have 208 flights in your database. If so, and with reasonable data, it is probably correct and this is further tested for question 7" as "Message";
 */
 
-CREATE PROCEDURE calculateFreeSeats(IN flightnumber int)
+CREATE FUNCTION calculateFreeSeats(flightnumber INT) RETURNS INT
 BEGIN
 	DECLARE free_seats INT;
-	SELECT sum(num_of_seats) FROM reservation WHERE flight_num=flightnumber AS reserved_seats;
+    DECLARE reserved_seats INT;
+	SELECT sum(num_of_seats) FROM reservation WHERE flight_num=flightnumber INTO reserved_seats;
     SET free_seats = 40 - reserved_seats;
-    /* 40 passengers /*
+    RETURN free_seats;
+    /* 40 passengers */
     /* kanske måste kolla på något med att ticker_num = NULL för att ej blanda ihop reservationer och bokningar */
+END;
+
+/* TEST CODE FOR calculateFreeSeats */
+INSERT INTO reservation (flight_num, num_of_seats) values (1,1);
+INSERT INTO reservation (flight_num, num_of_seats) values (2,40);
+INSERT INTO reservation (flight_num, num_of_seats) values (3,43);
+SELECT* from reservation;
+SELECT calculateFreeSeats(3);
+/* TEST CODE FOR calculateFreeSeats */
+
+CREATE FUNCTION calculatePrice(flightnumber INT) RETURNS DOUBLE;
+BEGIN
+/* tot_price = routeprice * weekdayfactor * (bookedpassengers+1)/40 * profitfactor */
 END;
